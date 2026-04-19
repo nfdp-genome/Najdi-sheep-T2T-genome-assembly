@@ -1,0 +1,123 @@
+# Example config for the Najdi T2T assembly pipeline driver.
+# Copy to my_run.yaml (or any name), edit paths, then: python driver.py --config my_run.yaml
+
+project:
+  name: najdi_t2t
+  sample_id: "1268" # used in output filenames (e.g. 1268_hifiasm_primary_...)
+  # Use an absolute paths
+  workdir: <PATH>/pipeline_runs/example_run
+
+# HiFiasm output prefix (-o PREFIX.asm); legacy pattern: Najdi_T2T_NLFDP1268_v1.0
+hifiasm:
+  output_prefix: "Najdi_T2T_NLFDP1268_v1.0"
+  # primary | hap1 | hap2 | all (runs primary+hap1+hap2 as separate phase workdirs), or a list e.g. [primary, hap1]
+  contig_phases: primary
+
+inputs:
+  # If set, skips hifiasm + gfa_to_primary; uses this FASTA as primary for scaffolding/QC.
+  existing_primary_fasta: null
+  # Optional per-phase Hi-C BAM when contig_phases lists multiple phases (keys: primary, hap1, hap2).
+  # hic_sorted_bam_by_phase:
+  #   primary: /path/to/sample_primary_hic.sorted.bam
+  #   hap1: /path/to/sample_hap1_hic.sorted.bam
+  # Optional per-phase starting FASTA (dict keys primary, hap1, hap2); skips gfa_to_primary for that phase only.
+  # existing_contigs_fasta:
+  #   primary: /path/to/existing_primary.fa
+  hifi_reads: /path/to/hifi.fastq.gz
+  ont_reads: /path/to/ont.fastq.gz
+  # YaHS expects a coordinate-sorted Hi-C BAM (same as hiC_Yahs_scaffolding_v1.0.sh)
+  hic_sorted_bam: /path/to/sample_hic.sorted.bam
+  reference_fasta: /path/to/reference.fa # dotplot + optional QUAST reference
+  medaka_model: r941_min_sup_g507
+  busco_lineage_1: /path/to/busco_downloads/lineages/mammalia_odb12
+  busco_lineage_2: /path/to/busco_downloads/lineages/laurasiatheria_odb12
+  # Dotplot (nucmer + DotPrep.py)
+  dotprep_script: /path/to/WP1_genome_assembly_qc/code/tools/dot/DotPrep.py
+  # SALSA: path to run_pipeline.py inside conda env `salsa`
+  salsa_run_pipeline: /path/to/miniconda3/envs/salsa/bin/run_pipeline.py
+  # ntLink executable (full path to `ntLink` from conda env, or `ntLink` if on PATH)
+  ntlink_bin: ntLink
+  # funannotate clean — shell prefix before `funannotate clean` (default micromamba env)
+  funannotate_runner: 'micromamba run -n funannotate_clean_env'
+
+execution:
+  mode: slurm # slurm | local
+  slurm:
+    partition: batch
+    account: null
+    constraint: intel
+    max_parallel_jobs: 20
+    # Optional: sbatch extra lines (list of strings)
+    sbatch_extra: []
+    # Optional: space-separated module names per step (wrapper runs module load)
+    modules_by_step:
+      hifiasm: "hifiasm/0.25.0"
+      scaffold: "yahs/1.1 samtools/1.16.1 bedtools/2.30.0"
+      polish: "minimap2/2.24 racon/1.5.0 samtools/1.16.1"
+      medaka: "minimap2/2.24 samtools/1.16.1"
+      gapfill: "minimap2/2.24 racon/1.5.0 samtools/1.16.1"
+      qc: "quast/5.2.0 busco/5.8.3 mummer"
+      quast_all: "quast/5.2.0"
+  local:
+    # When false, runs step scripts directly on the host (your conda/modules).
+    # When true, runs each step inside Docker (IBEX should use mode: slurm instead).
+    use_docker: false
+    pre_bash: null # e.g. "source /path/miniconda3/bin/activate ntlink"
+    images:
+      default: quay.io/biocontainers/multiqc:1.19--pyhdfd78af_0 # placeholder; override per step in driver defaults
+      hifiasm: quay.io/biocontainers/hifiasm:0.19.8--h9ee0642_0
+      qc: quay.io/biocontainers/quast:5.2.0--py39pl5321hdfd78af_2
+      yahs: quay.io/biocontainers/yahs:1.2a.2--hdfd78af_0
+      polishing: quay.io/biocontainers/medaka:1.11.0--py39hdfd78af_0
+    bind_mounts:
+      - /path/to/pipeline_workdir
+      - /path/to/raw_reads
+
+resources:
+  defaults:
+    cpus: 40
+    memory: "256G"
+    walltime: "48:00:00"
+    nodes: 1
+  per_stage:
+    hifiasm: { cpus: 40, memory: "256G", walltime: "336:00:00" }
+    gfa_to_fa: { cpus: 4, memory: "8G", walltime: "01:00:00" }
+    scaffold: { cpus: 40, memory: "265G", walltime: "96:00:00" }
+    polish: { cpus: 40, memory: "265G", walltime: "96:00:00" }
+    gapfill: { cpus: 40, memory: "256G", walltime: "96:00:00" }
+    funannotate_clean: { cpus: 8, memory: "32G", walltime: "12:00:00" }
+    qc: { cpus: 40, memory: "256G", walltime: "96:00:00" }
+    quast_all: { cpus: 16, memory: "64G", walltime: "08:00:00" }
+
+stages:
+  qc_waves: true
+  # Run BUSCO+QUAST+dotplot after scaffold / polish / gapfill / clean (in addition to post-primary QC).
+  intermediate_qc: true
+  hifiasm: true
+  gfa_to_primary: true
+  scaffolders: [yahs, salsa] # subset allowed
+  polishers: [racon, medaka]
+  gapfillers: [ntlink, tgsgapcloser]
+  funannotate_clean_full_tree: true
+  final_quast_multi: true
+
+run_mode: full_optimization # full_optimization | selective
+
+selective:
+  # When run_mode == selective, only these jobs run (each needs paths filled).
+  jobs: []
+  # Example:
+  # jobs:
+  #   - step: qc_wave
+  #     assembly_id: my_manual_id
+  #     assembly_fasta: /abs/path/to.fa
+
+logging:
+  dir: logs # under workdir unless absolute
+  failure_tail_lines: 80
+  verbosity: INFO
+  write_manifest: true
+
+resume:
+  enabled: true
+  state_file: .pipeline_state.json
