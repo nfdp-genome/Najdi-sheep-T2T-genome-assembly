@@ -19,7 +19,7 @@ This repository contains scripts and workflows used for:
 .
 ├── 01_Assembly/
 ├── 02_Polish/
-├── 03_Assessment/
+├── 03_QC_Assessment/
 ├── 04_Chromosome_Reconstruction/
 ├── 05_Gap_Closure/
 ├── 06_Telomere_Rescue/
@@ -57,7 +57,7 @@ Contains polishing workflows including:
 
 ---
 
-## 03_Assessment
+## 03_QC_Assessment
 
 Contains quality assessment workflows for:
 

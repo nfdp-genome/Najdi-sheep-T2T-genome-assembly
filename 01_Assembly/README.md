@@ -1,8 +1,8 @@
 # 01_Assembly
 
-Standalone assembly steps for generating draft and scaffolded assemblies.
+Standalone assembly steps for generating draft assemblies.
 
-## Files in this folder
+## Files in this directory
 
 - `step_hifiasm.sh` + `step_hifiasm.config.yaml`
 - `step_gfa_primary.sh` + `step_gfa_primary.config.yaml`

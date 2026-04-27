@@ -1,4 +1,4 @@
-# 03_QC_Assessment
+# 03_Assessment
 
 Standalone assembly quality assessment steps (BUSCO/QUAST/dotplot).
 
