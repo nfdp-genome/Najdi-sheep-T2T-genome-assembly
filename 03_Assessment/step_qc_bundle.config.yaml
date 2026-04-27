@@ -1,0 +1,18 @@
+log_file: ./logs/step_qc_bundle.log
+params:
+  FA: /path/to/fa
+  LABEL: sample_label
+  L1_PATH: /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/data/databases/busco_downloads/lineages/mammalia_odb12
+  L2_PATH: /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/data/databases/busco_downloads/lineages/laurasiatheria_odb12
+  BUSCO_OUT_ROOT: /path/to/busco_out_root
+  LOG_ROOT: /path/to/log_root
+  CPUS: 1
+  QUAST_OUT_ROOT: /path/to/quast_out_root
+  REFERENCE_FASTAS:
+    - /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/data/processed/hifiasm_assembly/chromosomal_reconstruction/references/GCA_040805955.1__Ovis_aries__HuM.NewDeflines.fasta
+    - /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/data/processed/hifiasm_assembly/chromosomal_reconstruction/references/GCA_041121725.1__Ovis_aries__HuF.NewDeflines.fasta
+    - /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/data/processed/hifiasm_assembly/chromosomal_reconstruction/references/GCA_016772045.2__Ovis_aries__Rambouillet_v3.NewDeflines.fasta
+  REFERENCE_FASTA: /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/data/processed/hifiasm_assembly/chromosomal_reconstruction/references/GCA_040805955.1__Ovis_aries__HuM.NewDeflines.fasta
+  DOTPREP: /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/code/tools/dot/DotPrep.py
+  DOTPLOT_OUTDIR: /path/to/dotplot_outdir
+  DOTPLOT_OUTPREFIX: /path/to/dotplot_outprefix

@@ -1,0 +1,9 @@
+log_file: ./logs/step_hic_map.log
+params:
+  THREADS: 1
+  REF_FASTA: /path/to/ref_fasta
+  HIC_R1: /path/to/hic_r1
+  HIC_R2: /path/to/hic_r2
+  OUT_BAM: /path/to/out_bam
+  HIC_TMPDIR: /path/to/hic_tmpdir
+  SAMTOOLS_SORT_MEM_PER_THREAD: 1G

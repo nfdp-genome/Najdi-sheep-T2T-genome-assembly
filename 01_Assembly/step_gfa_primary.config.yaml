@@ -1,0 +1,4 @@
+log_file: ./logs/step_gfa_primary.log
+params:
+  GFA_IN: /path/to/gfa_in
+  FASTA_OUT: /path/to/fasta_out

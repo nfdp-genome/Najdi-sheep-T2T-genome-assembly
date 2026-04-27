@@ -1,0 +1,6 @@
+log_file: ./logs/step_quast_multi.log
+params:
+  OUT_DIR: /path/to/out_dir
+  THREADS: 1
+  QUAST_FASTA_LIST: /path/to/quast_fasta_list
+  QUAST_LABELS_FILE: /path/to/quast_labels_file

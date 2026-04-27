@@ -1,0 +1,8 @@
+log_file: ./logs/step_polish_racon.log
+params:
+  THREADS: 1
+  ONT_READS: /path/to/ont_reads
+  ASM_IN: /path/to/asm_in
+  WORK_DIR: /path/to/work_dir
+  TAG: sample_asm
+  FINAL_OUT: /path/to/final_out

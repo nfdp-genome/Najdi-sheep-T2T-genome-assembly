@@ -1,0 +1,8 @@
+log_file: ./logs/step_gap_tgsgapcloser.log
+params:
+  THREADS: 1
+  ASM_IN: /path/to/asm_in
+  ONT_FASTQ: /path/to/ont_fastq
+  WORK_DIR: /path/to/work_dir
+  TAG: sample_asm
+  FINAL_OUT: /path/to/final_out

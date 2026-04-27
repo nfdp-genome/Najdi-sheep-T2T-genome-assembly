@@ -1,0 +1,7 @@
+log_file: ./logs/step_yahs.log
+params:
+  YAHS_WORKDIR: /path/to/yahs_workdir
+  ASM_FASTA: /path/to/asm_fasta
+  HIC_BAM: /path/to/hic_bam
+  YAHS_PREFIX: /path/to/yahs_prefix
+  FINAL_SCAFFOLD_FA: /path/to/final_scaffold_fa

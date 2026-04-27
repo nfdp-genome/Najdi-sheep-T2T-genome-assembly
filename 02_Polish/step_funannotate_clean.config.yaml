@@ -1,0 +1,5 @@
+log_file: ./logs/step_funannotate_clean.log
+params:
+  GENOME: /path/to/genome
+  OUT_FASTA: /path/to/out_fasta
+  FUNANNOTATE_RUNNER: funannotate

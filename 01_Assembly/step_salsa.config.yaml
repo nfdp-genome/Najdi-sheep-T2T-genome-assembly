@@ -1,0 +1,9 @@
+log_file: ./logs/step_salsa.log
+params:
+  SALSA_WORKDIR: /path/to/salsa_workdir
+  REF_FASTA: /path/to/ref_fasta
+  SORTED_BAM: /path/to/sorted_bam
+  PREFIX: /path/to/prefix
+  SALSA_RUN: /ibex/sw/rl9c/salsa/2.3/rl9_conda3/env/bin/run_pipeline.py
+  FINAL_SCAFFOLD_FA: /path/to/final_scaffold_fa
+  THREADS: 1

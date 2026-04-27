@@ -1,0 +1,10 @@
+log_file: ./logs/step_qc_wave.log
+params:
+  FA: /path/to/fa
+  LABEL: sample_label
+  L1_PATH: /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/data/databases/busco_downloads/lineages/mammalia_odb12
+  L2_PATH: /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/data/databases/busco_downloads/lineages/laurasiatheria_odb12
+  BUSCO_OUT_ROOT: /path/to/busco_out_root
+  LOG_ROOT: /path/to/log_root
+  CPUS: 1
+  QUAST_OUT_ROOT: /path/to/quast_out_root

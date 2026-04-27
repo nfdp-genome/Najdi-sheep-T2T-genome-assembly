@@ -1,0 +1,7 @@
+log_file: ./logs/step_hifiasm.log
+params:
+  HIFIASM_OUTDIR: /path/to/hifiasm_outdir
+  HIFIASM_PREFIX: /path/to/hifiasm_prefix
+  THREADS: 1
+  HIFIASM_HIFI: /path/to/hifiasm_hifi
+  HIFIASM_ONT: /path/to/hifiasm_ont

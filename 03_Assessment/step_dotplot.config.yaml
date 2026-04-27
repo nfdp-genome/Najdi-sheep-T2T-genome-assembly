@@ -1,0 +1,7 @@
+log_file: ./logs/step_dotplot.log
+params:
+  REFERENCE_FASTA: /path/to/reference_fasta
+  ASSEMBLY_FASTA: /path/to/assembly_fasta
+  OUTPREFIX: /path/to/outprefix
+  DOTPREP: /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/code/tools/dot/DotPrep.py
+  THREADS: 1
