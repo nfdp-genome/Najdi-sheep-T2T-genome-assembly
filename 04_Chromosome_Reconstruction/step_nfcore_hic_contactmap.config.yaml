@@ -1,0 +1,23 @@
+log_file: ./logs/step_nfcore_hic_contactmap.log
+
+params:
+  TAG: t2t_v1
+  SAMPLE: sample_id
+  FASTA: /path/to/genome.fasta
+  HIC_R1: /path/to/hic_R1.fastq.gz
+  HIC_R2: /path/to/hic_R2.fastq.gz
+
+  OUT_BASE: ./results/nfcore_hic_contactmap
+  WORK_BASE: ./work/nfcore_hic_contactmap
+  SINGULARITY_CACHE: ./work/singularity_cache
+
+  NXFCORE_HIC_REV: "2.1.0"
+  NXFCORE_PROFILE: kaust
+  MIN_CIS_DIST: "1000"
+  DNASE: "true"
+  SPLIT_FASTQ: "true"
+  RESUME: "false"
+
+  RUN_HICTK_CONVERT: "true"
+  HICTK_SIF: ./containers/hictk_2.1.2.sif
+  HICTK_IMAGE: docker://ghcr.io/paulsengroup/hictk:2.1.2
