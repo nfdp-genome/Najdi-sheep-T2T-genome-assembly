@@ -1,0 +1,117 @@
+# Najdi T2T assembly pipeline config for sample 1268
+# Run with: python driver.py --config my_run_1268.yaml
+
+project:
+  name: najdi_t2t
+  sample_id: "1268"
+  workdir: /ibex/user/x_altuway/najdi_pipeline/1268
+
+hifiasm:
+  output_prefix: "Najdi_T2T_NLFDP1268_v1.0"
+  contig_phases: primary
+
+inputs:
+  existing_primary_fasta: null
+
+  # Raw reads
+  hifi_reads: /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/pipeline/data_p/1268_p/hifi/hifi.filt.fastq.gz
+  ont_reads:  /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/pipeline/data_p/1268_p/ont/ont.fastq.gz
+
+  # Hi-C raw reads (BAM will be generated automatically by the pipeline)
+  hic_r1: /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/pipeline/data_p/1268_p/hic/hic_R1.fastq.gz
+  hic_r2: /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/pipeline/data_p/1268_p/hic/hic_R2.fastq.gz
+
+  # Reference genome
+  reference_fasta: /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/data/reference/GCF_016772045.2_ARS-UI_Ramb_v3.0_genomic.fna
+
+  # BUSCO lineages
+  busco_lineage_1: /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/data/databases/busco_downloads/lineages/mammalia_odb12
+  busco_lineage_2: /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/data/databases/busco_downloads/lineages/laurasiatheria_odb12
+
+  # Dotplot
+  dotprep_script: /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/code/tools/dot/DotPrep.py
+
+  # Medaka model
+  medaka_model: r941_min_sup_g507
+
+  # SALSA
+  salsa_run_pipeline: /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/code/tools/miniconda3/envs/salsa/bin/run_pipeline.py
+
+  # ntLink 
+  ntlink_bin: /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/code/tools/miniconda3/envs/ntlink/bin/ntLink
+  # Funannotate
+  funannotate_runner: ''
+
+execution:
+  mode: slurm
+  slurm:
+    partition: batch
+    account: null
+    constraint: intel
+    max_parallel_jobs: 20
+    sbatch_extra: []
+    modules_by_step:
+      hifiasm:    "hifiasm/0.25.0"
+      hic_mapping: "bwa/0.7.17/gnu-12.2.0 samtools/1.16.1"
+      scaffold:   "yahs/1.1 samtools/1.16.1 bedtools/2.30.0"
+      polish:     "minimap2/2.24 racon/1.5.0 samtools/1.16.1"
+      medaka: "minimap2/2.24 samtools/1.16.1 medaka/1.12.1"
+      gapfill:    "minimap2/2.24 racon/1.5.0 samtools/1.16.1"
+      qc:         "quast/5.2.0 busco/5.8.3 mummer"
+      quast_all:  "quast/5.2.0"
+      funannotate_clean: "funannotate"
+  local:
+    use_docker: false
+    pre_bash: null
+    images:
+      default:    quay.io/biocontainers/multiqc:1.19--pyhdfd78af_0
+      hifiasm:    quay.io/biocontainers/hifiasm:0.19.8--h9ee0642_0
+      qc:         quay.io/biocontainers/quast:5.2.0--py39pl5321hdfd78af_2
+      yahs:       quay.io/biocontainers/yahs:1.2a.2--hdfd78af_0
+      polishing:  quay.io/biocontainers/medaka:1.11.0--py39hdfd78af_0
+    bind_mounts:
+      - /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/pipeline
+      - /ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/data
+
+resources:
+  defaults:
+    cpus: 40
+    memory: "256G"
+    walltime: "48:00:00"
+    nodes: 1
+  per_stage:
+    hifiasm:           { cpus: 40, memory: "256G",  walltime: "336:00:00" }
+    gfa_to_fa:         { cpus: 4,  memory: "8G",    walltime: "01:00:00"  }
+    hic_mapping:       { cpus: 40, memory: "128G",  walltime: "24:00:00"  }
+    scaffold:          { cpus: 40, memory: "265G",  walltime: "96:00:00"  }
+    polish:            { cpus: 40, memory: "265G",  walltime: "96:00:00"  }
+    gapfill:           { cpus: 40, memory: "256G",  walltime: "96:00:00"  }
+    funannotate_clean: { cpus: 8,  memory: "32G",   walltime: "12:00:00"  }
+    qc:                { cpus: 40, memory: "256G",  walltime: "96:00:00"  }
+    quast_all:         { cpus: 16, memory: "64G",   walltime: "08:00:00"  }
+
+stages:
+  qc_waves: true
+  intermediate_qc: true
+  hifiasm: true
+  gfa_to_primary: true
+  scaffolders: [yahs, salsa]
+  polishers: [racon, medaka]
+  gapfillers: [ntlink, tgsgapcloser]
+  funannotate_clean_full_tree: true
+  final_quast_multi: true
+
+run_mode: full_optimization
+
+selective:
+  jobs: []
+
+logging:
+  dir: logs
+  failure_tail_lines: 80
+  verbosity: INFO
+  write_manifest: true
+
+resume:
+  enabled: true
+  state_file: .pipeline_state.json
