@@ -1,0 +1,17 @@
+# Genome profiling (GenomeScope2) — config for 00_genomescope_array.sh
+# k-mer counting with KMC, then a GenomeScope2 model fit per sample.
+# Fill in the paths below for your environment; the script itself is path-free.
+
+genomescope_r: /path/to/genomescope2.0/genomescope.R   # GenomeScope2 genomescope.R
+output_base:   results/genomescope                     # per-sample outputs created under here
+
+kmer:          21         # k-mer length (KMC -k and GenomeScope -k)
+ploidy:        2          # GenomeScope -p
+kmc_mem_gb:    64         # KMC -m (RAM budget, GB)
+kmc_max_count: 10000000   # KMC -cs and histogram -cx upper bound
+
+# One entry per array task: "<sample_id> <hifi_fastq_path>".
+# Keep #SBATCH --array=1-N in sync with the number of samples listed here.
+samples:
+  - "sample1 /path/to/sample1/hifi.fastq.gz"
+  - "sample2 /path/to/sample2/hifi.fastq.gz"
