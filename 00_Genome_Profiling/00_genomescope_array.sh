@@ -13,9 +13,9 @@ set -euo pipefail
 # =========================
 #   CONFIG
 # =========================
-# Config-driven copy of 00_genomescope_array.sh: all paths/params live in
-# config.yaml next to this script, so nothing site-specific is baked in.
-# Override with: CONFIG=/path/to/config.yaml sbatch 00_genomescope_array.config.sh
+# All paths/params live in config.yaml next to this script, so nothing
+# site-specific is baked in.
+# Override with: CONFIG=/path/to/config.yaml sbatch 00_genomescope_array.sh
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG="${CONFIG:-${SCRIPT_DIR}/config.yaml}"
 [[ -f "$CONFIG" ]] || { echo "config not found: $CONFIG" >&2; exit 1; }
