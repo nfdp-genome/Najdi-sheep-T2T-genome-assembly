@@ -6,19 +6,29 @@ THREADS="${THREADS:-40}"
 mkdir -p "${SALSA_WORKDIR}"
 cd "${SALSA_WORKDIR}"
 
+# python2 fix
+SALSA_BIN_DIR="$(dirname "${SALSA_RUN}")"
+PY2_BIN="${SALSA_BIN_DIR}/python2"
+export PYTHONNOUSERSITE=1
+unset PYTHONHOME || true
+unset PYTHONPATH || true
+export PATH="${SALSA_BIN_DIR}:${PATH}"
+
 ASM_FASTA_BASENAME="$(basename "${REF_FASTA}")"
 if [[ ! -e "${ASM_FASTA_BASENAME}" ]]; then
   ln -s "${REF_FASTA}" "${ASM_FASTA_BASENAME}"
 fi
 if [[ ! -e "${ASM_FASTA_BASENAME}.fai" ]]; then
-  ln -s "${REF_FASTA}.fai" "${ASM_FASTA_BASENAME}.fai"
+  if [[ -s "${REF_FASTA}.fai" ]]; then
+    ln -s "${REF_FASTA}.fai" "${ASM_FASTA_BASENAME}.fai"
+  else
+    samtools faidx "${ASM_FASTA_BASENAME}"
+  fi
 fi
-
 LENGTHS_FILE="${ASM_FASTA_BASENAME%.fasta}.contig_lengths.txt"
 if [[ ! -f "${LENGTHS_FILE}" ]]; then
   cut -f1,2 "${ASM_FASTA_BASENAME}.fai" > "${LENGTHS_FILE}"
 fi
-
 BED_RAW="${PREFIX}.bed"
 BED_SORTED="${PREFIX}.namesorted.bed"
 if [[ ! -s "${BED_SORTED}" ]]; then
@@ -26,10 +36,8 @@ if [[ ! -s "${BED_SORTED}" ]]; then
   sort -k4,4 "${BED_RAW}" > "${BED_SORTED}"
   rm -f "${BED_RAW}"
 fi
-
 OUTDIR="salsa_out"
 mkdir -p "${OUTDIR}"
-
 "${SALSA_RUN}" \
     -a "${ASM_FASTA_BASENAME}" \
     -l "${LENGTHS_FILE}" \
@@ -38,7 +46,6 @@ mkdir -p "${OUTDIR}"
     -i 3 \
     -m yes \
     -o "${OUTDIR}"
-
 FINAL_FASTA=""
 if [[ -s "${OUTDIR}/scaffolds_FINAL.fasta" ]]; then
     FINAL_FASTA="${OUTDIR}/scaffolds_FINAL.fasta"

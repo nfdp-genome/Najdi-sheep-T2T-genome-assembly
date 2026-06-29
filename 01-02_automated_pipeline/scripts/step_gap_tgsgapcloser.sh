@@ -2,7 +2,7 @@
 # Frozen from scripts/gapfilling_hifiasm_hic_ont_tgsgapcloser_v1.1.sh
 set -euo pipefail
 : "${THREADS:?}" "${ASM_IN:?}" "${ONT_FASTQ:?}" "${WORK_DIR:?}" "${TAG:?}" "${FINAL_OUT:?}"
-TGSGC_BIN="$(command -v tgsgapcloser)"
+TGSGC_BIN="/ibex/project/c2293/najdi_t2t_project/WP1_genome_assembly_qc/code/tools/TGS-GapCloser/tgsgapcloser"
 RACON_BIN="$(command -v racon)"
 mkdir -p "${WORK_DIR}"
 cd "${WORK_DIR}"
@@ -23,7 +23,7 @@ OUT_PREFIX="${TAG}_tgsgapcloser"
   --output "${OUT_PREFIX}" \
   --racon  "${RACON_BIN}" \
   --thread "${THREADS}" \
-  > "${OUT_PREFIX}.log" 2> "${OUT_PREFIX}.err"
+  > "${OUT_PREFIX}.log" 2> "${OUT_PREFIX}.err" || true
 FINAL1="${OUT_PREFIX}.scaff_seq"
 FINAL2="${OUT_PREFIX}.contig"
 if [[ -s "${FINAL1}" ]]; then

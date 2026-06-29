@@ -8,6 +8,13 @@ ASM_BASENAME="$(basename "${ASM_FASTA}")"
 if [[ ! -e "${ASM_BASENAME}" ]]; then
   ln -s "${ASM_FASTA}" "${ASM_BASENAME}"
 fi
+if [[ ! -e "${ASM_BASENAME}.fai" ]]; then
+  if [[ -s "${ASM_FASTA}.fai" ]]; then
+    ln -s "${ASM_FASTA}.fai" "${ASM_BASENAME}.fai"
+  else
+    samtools faidx "${ASM_BASENAME}"
+  fi
+fi
 yahs "${ASM_BASENAME}" "${HIC_BAM}" -o "${YAHS_PREFIX}"
 FINAL_FA="${YAHS_PREFIX}_scaffolds_final.fa"
 [[ -s "${FINAL_FA}" ]] || { echo "[ERROR] YaHS output missing: ${FINAL_FA}" >&2; exit 1; }

@@ -11,7 +11,8 @@ cmd=(quast.py "${GENOMES[@]}" --large --threads "${THREADS}" --output-dir "${OUT
 if [[ -n "${QUAST_LABELS_FILE:-}" && -s "${QUAST_LABELS_FILE}" ]]; then
   mapfile -t LABELS < "${QUAST_LABELS_FILE}"
   if [[ ${#LABELS[@]} -eq ${#GENOMES[@]} ]]; then
-    cmd+=(--labels "${LABELS[@]}")
+LABELS_CSV=$(IFS=,; echo "${LABELS[*]}")
+cmd+=(--labels "${LABELS_CSV}")
   else
     echo "[WARN] label count != genome count; omitting --labels" >&2
   fi

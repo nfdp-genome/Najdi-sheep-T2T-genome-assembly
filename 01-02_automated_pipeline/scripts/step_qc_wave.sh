@@ -17,6 +17,7 @@ busco \
   -m genome \
   -l "${L1_PATH}" \
   -c "${CPUS}" \
+  -f \
   --out_path "${BUSCO_OUT_ROOT}"
 
 OUTNAME2="busco_${LABEL}_laurasiatheria"
@@ -26,6 +27,7 @@ busco \
   -m genome \
   -l "${L2_PATH}" \
   -c "${CPUS}" \
+  -f \
   --out_path "${BUSCO_OUT_ROOT}"
 
 QUAST_OUT_ROOT="${QUAST_OUT_ROOT:-$(dirname "${BUSCO_OUT_ROOT}")/quast}"
